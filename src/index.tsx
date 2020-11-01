@@ -2,12 +2,32 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { MuiThemeProvider } from '@material-ui/core';
+import { theme } from "./resources";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Provider } from "react-redux"
+import { appStore, persistor } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react"
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+export default function Qhair() {
+  return (
+    <Provider store={appStore}>
+      <MuiThemeProvider theme={theme}>
+        <Router>
+          <PersistGate persistor={persistor}>
+            <App />
+          </PersistGate>
+        </Router>
+      </MuiThemeProvider>
+    </Provider>
+  )
+}
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Qhair />
   </React.StrictMode>,
   document.getElementById('root')
 );
