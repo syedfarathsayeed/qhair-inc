@@ -1,6 +1,6 @@
-import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Container, Title } from "components";
+import { Divider, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, useMediaQuery } from "@material-ui/core";
+import { Delete as DeleteIcon, Add as IncrementIcon, Remove as DecrementIcon } from "@material-ui/icons";
+import { Button, Container, Title } from "components";
 import Stripe from "components/Stripe";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,7 +45,9 @@ const CheckoutPage: React.FC<{}> = () => {
 
     const dispatch = useDispatch<AppThunkDispatch>();
 
-    const renderCartItemsAsRow = (cartItems: Array<CartItem>) => {
+    const isSmallScreen = useMediaQuery("(max-width: 900px)")
+
+    const renderCartItemsAsRow = (cartItems: Array<CartItem>): Array<Row> => {
         return cartItems.map(item => {
             const { id, imageUrl, name, size, price, quantity } = item
             return {
@@ -66,7 +68,7 @@ const CheckoutPage: React.FC<{}> = () => {
     const columns: Column[] = [
         { id: "product", label: <h1>Shopping cart</h1>, minWidth: 300, align: "left" },
         { id: "price", label: "Price", minWidth: 100, align: "left" },
-        { id: "quantity", label: "Quantity", minWidth: 150, align: "center" },
+        { id: "quantity", label: "Quantity", minWidth: 180, align: "center" },
         { id: "total", label: "Total", minWidth: 100, align: "left" },
     ]
 
@@ -87,8 +89,22 @@ const CheckoutPage: React.FC<{}> = () => {
         dispatch(cartActions.removeItem(itemToRemove))
     }
 
+    const sizeContent = (row: Row, value: number | Product) => {
+        return (
+            <div className={classes.items}>
+                <IconButton size="small" color="primary" onClick={() => onDecrementClik(row.id)}>
+                    <DecrementIcon />
+                </IconButton>
+                <Typography>{value}</Typography>
+                <IconButton size="small" color="primary" onClick={() => onIncrementClick(row.id)}>
+                    <IncrementIcon />
+                </IconButton>
+            </div>
+        )
+    }
 
-    const renderProduct = (product: Product) => {
+    const renderProduct = (row: Row) => {
+        const { product, price, quantity, total } = row
         const getColor = (size: Size) => {
             return product.size === size ? "primary" : "default"
         }
@@ -96,6 +112,7 @@ const CheckoutPage: React.FC<{}> = () => {
             const itemToUpdate = cartItems.find(item => item.id === product.id)!
             dispatch(cartActions.updateItemSize(itemToUpdate, size))
         }
+
         return (
             <TableCell key={product.id} size="small" className={classes.productCell}>
                 <img src={product.imageUrl} alt={product.name} height={200} width={150} />
@@ -103,19 +120,34 @@ const CheckoutPage: React.FC<{}> = () => {
                     <h2>{product.name}</h2>
                     <div className={classes.size}>
                         <Typography>{`Size: `}</Typography>
-                        <IconButton color={getColor("s")} onClick={() => handleClick("s")}>
+                        <IconButton size="small" color={getColor("s")} onClick={() => handleClick("s")}>
                             {"S"}
                         </IconButton>
-                        <IconButton color={getColor("m")} onClick={() => handleClick("m")}>
+                        <IconButton size="small" color={getColor("m")} onClick={() => handleClick("m")}>
                             {"M"}
                         </IconButton>
-                        <IconButton color={getColor("l")} onClick={() => handleClick("l")}>
+                        <IconButton size="small" color={getColor("l")} onClick={() => handleClick("l")}>
                             {"L"}
                         </IconButton>
-                        <IconButton color={getColor("xl")} onClick={() => handleClick("xl")}>
+                        <IconButton size="small" color={getColor("xl")} onClick={() => handleClick("xl")}>
                             {"XL"}
                         </IconButton>
                     </div>
+                    {isSmallScreen && (
+                        <>
+                            <Typography>{`Price: ${price} €`}</Typography>
+                            <div className={classes.quantity}>
+                                <Typography>{`Quantity: `}</Typography>
+                                {sizeContent(row, quantity)}
+                            </div>
+                            <Typography>{`Total: ${total} €`}</Typography>
+                            <Button label="Remove from cart"
+                                variant="primary"
+                                onClick={() => onDelete(row.id)}
+                                className={classes.button} />
+                        </>
+                    )}
+
                 </div>
             </TableCell>
         )
@@ -124,18 +156,12 @@ const CheckoutPage: React.FC<{}> = () => {
     const renderProductRow = (column: Column, row: Row) => {
         const value = row[column.id]
         if (isProduct(value)) {
-            return renderProduct(value as Product)
+            return renderProduct(row)
         } else if (column.id === "quantity") {
             return (
-                <TableCell key={column.id} size="small" align={column.align}>
-                    <IconButton color="primary" onClick={() => onDecrementClik(row.id)}>
-                        {"-"}
-                    </IconButton>
-                    {value}
-                    <IconButton color="primary" onClick={() => onIncrementClick(row.id)}>
-                        {"+"}
-                    </IconButton>
-                </TableCell>)
+                <TableCell key={column.id} align={column.align}>
+                    {sizeContent(row, value)}
+                </TableCell >)
         } else {
             return (
                 <TableCell key={column.id} align={column.align} size="small">
@@ -203,9 +229,41 @@ const CheckoutPage: React.FC<{}> = () => {
         )
     }
 
+    const smallScreenContent = () => {
+        return (
+            <>
+                <h1>
+                    Shopping Cart
+                </h1>
+                <Divider variant="middle" orientation="horizontal" className={classes.divider} />
+                {rows.map(row => renderProduct(row))}
+                {rows.length > 0
+                    ? (
+                        <>
+                            <div className={classes.total}>
+                                <Stripe price={getTotal(rows)} />
+                                <Title color="#1E29BE">{`Total amount: ${getTotal(rows)} €`}</Title>
+                            </div>
+                            <div className={classes.fakeCardInfo}>
+                                <Typography>{"*Please use the following test credit card for payments*"}</Typography>
+                                <Typography>{"4242 4242 4242 4242 -- Exp: 01/22 --CVV: 123"}</Typography>
+                            </div>
+                        </>
+                    ) : (
+                        <TableCell style={{ width: "90%" }} align={"center"}>
+                            {"There are no items in your cart"}
+                        </TableCell>
+                    )}
+
+            </>
+        )
+    }
+
     return (
-        <Container>
-            {checkoutContent()}
+        <Container className={classes.container}>
+            {isSmallScreen
+                ? smallScreenContent()
+                : checkoutContent()}
         </Container>
     )
 }

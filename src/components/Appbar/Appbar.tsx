@@ -48,7 +48,7 @@ const Header: React.FC<{}> = (props) => {
     }
 
     const checkScroll = () => {
-        if (window.pageYOffset > 80) {
+        if (window.pageYOffset > 40) {
             setShowScroll(true)
         } else {
             setShowScroll(false)
