@@ -1,8 +1,9 @@
-import ItemsPage from "pages/CategoryPage";
-import CollectionsPage from "pages/CollectionsPage";
-import React from "react";
+import React, { lazy } from "react";
 import { Route, RouteComponentProps, Switch } from "react-router-dom";
 import useStyles from "./index_styles"
+
+const ItemsPage = lazy(() => import("pages/CategoryPage"))
+const CollectionsPage = lazy(() => import("pages/CollectionsPage"))
 
 const ShopPage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 

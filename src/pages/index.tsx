@@ -1,9 +1,11 @@
 import { Appbar } from "components";
-import React from 'react';
+import Loader from "components/Loader/Loader";
+import React, { lazy, Suspense } from 'react';
 import { Route, Switch, Redirect } from "react-router-dom";
-import HomePage from "./HomePage";
-import ShopPage from "./ShopPage";
-import CheckoutPage from "./CheckoutPage";
+
+const HomePage = lazy(() => import("./HomePage"))
+const ShopPage = lazy(() => import("./ShopPage"))
+const CheckoutPage = lazy(() => import("./CheckoutPage"))
 
 const QhairShopping: React.FunctionComponent<{}> = (props) => {
 
@@ -12,10 +14,12 @@ const QhairShopping: React.FunctionComponent<{}> = (props) => {
             <Appbar />
             <main>
                 <Switch>
-                    <Redirect from={"/"} to={"/home"} exact />
-                    <Route path={"/home"} component={HomePage} />
-                    <Route path={"/shop"} component={ShopPage} />
-                    <Route path={"/checkout"} component={CheckoutPage} />
+                    <Suspense fallback={Loader}>
+                        <Redirect from={"/"} to={"/home"} exact />
+                        <Route path={"/home"} component={HomePage} />
+                        <Route path={"/shop"} component={ShopPage} />
+                        <Route path={"/checkout"} component={CheckoutPage} />
+                    </Suspense>
                 </Switch>
             </main>
         </>
