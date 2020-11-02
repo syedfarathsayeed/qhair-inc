@@ -6,8 +6,7 @@ export default makeStyles((theme: Theme) => {
     const fieldHeight = 35
     return (
         createStyles({
-            root: {
-                background: "none",
+            base: {
                 height: appbarHeight,
                 position: "fixed",
                 width: "100%",
@@ -15,6 +14,12 @@ export default makeStyles((theme: Theme) => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 zIndex: theme.zIndex.appBar
+            },
+            root: {
+                background: "none"
+            },
+            colored: {
+                background: "black"
             },
             toolBar: {
                 display: "flex",

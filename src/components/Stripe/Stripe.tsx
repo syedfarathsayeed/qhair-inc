@@ -1,6 +1,6 @@
 import React from "react";
 import StripeCheckout from "react-stripe-checkout";
-import Logo from "resources/images/logo.png";
+import Logo from "resources/images/qhairLogo.png";
 import useStyles from "./Stripe.styles";
 
 interface StripeProps {

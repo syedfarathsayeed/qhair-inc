@@ -13,11 +13,12 @@ import { AppState } from "redux/store"
 
 interface CartDropDownProps {
     cartItems: Array<CartItemType>
+    showScroll: boolean
 }
 
 const CartDropDown: React.FC<CartDropDownProps> = (props) => {
 
-    const { cartItems } = props
+    const { cartItems, showScroll } = props
 
     const history = useHistory()
 
@@ -66,7 +67,7 @@ const CartDropDown: React.FC<CartDropDownProps> = (props) => {
         <>
             <IconButton size="small" className={classes.iconButton} onClick={onCartClick}>
                 <Badge badgeContent={cartItemsCount} color="primary" showZero>
-                    <CartIcon />
+                    <CartIcon color={showScroll ? "secondary": "action"}/>
                 </Badge>
             </IconButton>
             <Popover

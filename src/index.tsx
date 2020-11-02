@@ -12,6 +12,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
 export default function Qhair() {
+
   return (
     <Provider store={appStore}>
       <MuiThemeProvider theme={theme}>
