@@ -19,7 +19,7 @@
 
 ## Sign in page
 
-![signin page](https://github.com/syedfarathsayeed/qhair-inc/blob/master/src/client/resources/images/signin.jpeg)
+![signin page](https://github.com/syedfarathsayeed/qhair-inc/blob/master/client/src/resources/images/signin.jpeg)
 
 # Deploy
 
