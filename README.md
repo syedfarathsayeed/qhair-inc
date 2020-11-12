@@ -1,5 +1,5 @@
 # Introduction
-[Qhair Inc](https://qhair-inc.herokuapp.com/home) is a fully responsive and PWA, e-commerce platform built using React, Hooks, Redux, Firebase, TypeScript, Stripe and Material-UI.
+[Qhair Inc](https://qhair-inc.herokuapp.com/home) is a fully responsive and PWA, e-commerce platform built using Node JS, React, Hooks, Redux, Firebase, TypeScript, Stripe, and Material-UI.
 
 ## Homepage
 
